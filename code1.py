@@ -68,19 +68,6 @@ def download(url,download_path,filename):
     
     return file
         
-        
-def unzip_f(zipped_file,uncompressed_file_path):
-    try:
-        log.info("Extracting the compressed file")
-        with zipfile.ZipFile(zipped_file,"r") as zr:
-            zr.extractall(uncompressed_file_path)
-            
-        log.info("Succeffully extracted compressed_file")
-        return True
-    except Exception:
-        log.error(f"Error while extracting - {str(Exception)}")
-        return False
-        
 def csv_file_creation(xml_file,csv_path):
     try:
         if not os.path.exists(csv_path):
@@ -148,12 +135,14 @@ def aws_s3(file,region,aws_access_key,aws_secret_access_key,bucket_name):
     try:
         filename_s3=file.split(os.sep)[-1]
         log.info("Creating bucket S3")
+        
         S3=boto3.resource(
             service_name="s3",
             region_name=region,
             aws_access_key_id=aws_access_key,
             aws_secret_access_key=aws_secret_access_key,
         )
+        
         log.info("Uploading the file")
         S3.bucket(bucket_name).upload_file(Filename=file,Key=filename_s3)
         log.info("File is successfully uploaded")
